@@ -2,7 +2,6 @@
 <%@ taglib prefix="u" tagdir="/WEB-INF/tags"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
-
 <html>
 <head>
 <style>
@@ -36,9 +35,9 @@ label { display:inline-block; width:100px; padding:10px; }
 label[for='gdsDes'] { display:block; }
 input { width:150px; }
 textarea#gdsDes { width:400px; height:180px; }
-
-.select_img img {margin:20px 0;}
-
+</style>
+<style>
+#container_box table td{width:100px; }
 </style>
 	<title>Home</title>
 </head>
@@ -69,56 +68,39 @@ textarea#gdsDes { width:400px; height:180px; }
 </aside>
 
 	<div id="container_box">
-	<h2>상품 등록</h2>
+	<h2>상품 리스트 조회</h2>
+	<table>
+ <thead>
+  <tr>
+   <th>번호</th>
+   <th>이름</th>
+   <th>카테고리</th>
+   <th>가격</th>
+   <th>수량</th>
+   <th>등록날짜</th>
+  </tr>
+ </thead>
+ <tbody>
+  <c:forEach items="${list}" var="list">
+	  <tr>
+			   <td>${list.gdsNum}</td>
+			   <td>
+			   		<a href="/admin/goods/view?n=${list.gdsNum}">${list.gdsName}</a>
+			   </td>
+			   <td>${list.cateCode}</td>
+			   <td>
+			  	 <fmt:formatNumber value="${list.gdsPrice}" pattern="###,###,###"/>
+			   </td>
+			   <td>${list.gdsStock}</td> 
+			   <td>
+			   		<fmt:formatDate value="${list.gdsDate}" pattern="yyyy-MM-dd" />
+			   </td>
+	  </tr>   
+  </c:forEach>
+</tbody>
+</table>
 	
-<form role="form" method="post" autocomplete="off" enctype="multipart/form-data">
-		
-		<div class="inputArea"> 
-		 <label>1차 분류</label>
-		 <select class="category1">
-		  <option value="">전체</option>
-		 </select>
-		
-		 <label>2차 분류</label>
-		 <select class="category2" name="cateCode">
-		  <option value="">전체</option>
-		 </select>
-		</div>
-		
-		<div class="inputArea">
-		 <label for="gdsName">상품명</label>
-		 <input type="text" id="gdsName" name="gdsName" />
-		</div>
-		
-		<div class="inputArea">
-		 <label for="gdsPrice">상품가격</label>
-		 <input type="text" id="gdsPrice" name="gdsPrice" />
-		</div>
-		
-		<div class="inputArea">
-		 <label for="gdsStock">상품수량</label>
-		 <input type="text" id="gdsStock" name="gdsStock" />
-		</div>
-		
-		<div class="inputArea">
-		 <label for="gdsDes">상품소개</label>
-		 <textarea rows="5" cols="50" id="gdsDes" name="gdsDes"></textarea>
-		</div>
-		
-		<div class="inputArea">
-			<label for="gdsImg">이미지</label>
-			<input type="file" id="gdsImg" name="file"/>
-			<div class="select_img"><img src=""/></div> 
-				
-				<%=request.getRealPath("/") %>
 
-		</div>
-		
-		<div class="inputArea">
-		 <button type="submit" id="register_Btn" class="btn btn-primary">등록</button>
-		</div>
-
-</form>
 	
 	</div>
 </section>
@@ -134,17 +116,6 @@ textarea#gdsDes { width:400px; height:180px; }
 </div>
 
 <script type="text/javascript">
-
-$("#gdsImg").change(function(){
-	if(this.files && this.files[0]){
-	var reader =new FileReader;
-	reader.onload = function(data) {
-		$(".select_img img").attr("src", data.target.result).width(500);
-	} 
-		reader.readAsDataURL(this.files[0]);
-	}
-	
-});
 
 
 //컨트롤러에서 데이터 받기

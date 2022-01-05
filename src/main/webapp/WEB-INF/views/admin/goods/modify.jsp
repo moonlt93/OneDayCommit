@@ -36,9 +36,6 @@ label { display:inline-block; width:100px; padding:10px; }
 label[for='gdsDes'] { display:block; }
 input { width:150px; }
 textarea#gdsDes { width:400px; height:180px; }
-
-.select_img img {margin:20px 0;}
-
 </style>
 	<title>Home</title>
 </head>
@@ -69,9 +66,9 @@ textarea#gdsDes { width:400px; height:180px; }
 </aside>
 
 	<div id="container_box">
-	<h2>상품 등록</h2>
+	<h2>상품 수정</h2>
 	
-<form role="form" method="post" autocomplete="off" enctype="multipart/form-data">
+<form id="modify-form" role="form" method="post" autocomplete="off">
 		
 		<div class="inputArea"> 
 		 <label>1차 분류</label>
@@ -81,41 +78,35 @@ textarea#gdsDes { width:400px; height:180px; }
 		
 		 <label>2차 분류</label>
 		 <select class="category2" name="cateCode">
-		  <option value="">전체</option>
+
 		 </select>
 		</div>
 		
 		<div class="inputArea">
 		 <label for="gdsName">상품명</label>
-		 <input type="text" id="gdsName" name="gdsName" />
+		 <input type="text" id="gdsName" name="gdsName" value="${goods.gdsName}"/>
 		</div>
 		
 		<div class="inputArea">
 		 <label for="gdsPrice">상품가격</label>
-		 <input type="text" id="gdsPrice" name="gdsPrice" />
+		 <input type="text" id="gdsPrice" name="gdsPrice" value="${goods.gdsPrice}" />
 		</div>
 		
 		<div class="inputArea">
 		 <label for="gdsStock">상품수량</label>
-		 <input type="text" id="gdsStock" name="gdsStock" />
+		 <input type="text" id="gdsStock" name="gdsStock" value="${goods.gdsStock }" />
 		</div>
 		
 		<div class="inputArea">
 		 <label for="gdsDes">상품소개</label>
-		 <textarea rows="5" cols="50" id="gdsDes" name="gdsDes"></textarea>
+		 <textarea rows="5" cols="50" id="gdsDes" name="gdsDes" >${goods.gdsDes }</textarea>
 		</div>
 		
-		<div class="inputArea">
-			<label for="gdsImg">이미지</label>
-			<input type="file" id="gdsImg" name="file"/>
-			<div class="select_img"><img src=""/></div> 
-				
-				<%=request.getRealPath("/") %>
-
-		</div>
+		<input type="hidden" name="gdsNum" value="${goods.gdsNum }"/>
 		
 		<div class="inputArea">
-		 <button type="submit" id="register_Btn" class="btn btn-primary">등록</button>
+			<button type="submit" id="update_Btn" class="btn btn-primary">완료</button>
+			<button type="button" id="cancle_Btn" class="btn btn-warning">취소</button>
 		</div>
 
 </form>
@@ -135,16 +126,39 @@ textarea#gdsDes { width:400px; height:180px; }
 
 <script type="text/javascript">
 
-$("#gdsImg").change(function(){
-	if(this.files && this.files[0]){
-	var reader =new FileReader;
-	reader.onload = function(data) {
-		$(".select_img img").attr("src", data.target.result).width(500);
-	} 
-		reader.readAsDataURL(this.files[0]);
-	}
+$(document).ready(function() {
 	
+
+
+
+	var select_cateCode = '${goods.cateCode}';
+	var select_cateCodeRef = '${goods.cateCodeRef}';
+	var select_cateName = '${goods.cateName}';
+	
+	if(select_cateCodeRef != null && select_cateCodeRef != '') {
+	 $(".category1").val(select_cateCodeRef);
+	 $(".category2").val(select_cateCode);
+	 $(".category2").children().remove();
+	 $(".category2").append("<option value='"
+	       + select_cateCode + "'>" + select_cateName + "</option>");
+	} else {
+	 $(".category1").val(select_cateCode);
+	 //$(".category2").val(select_cateCode);
+	 // select_cateCod가 부여되지 않는 현상이 있어서 아래 코드로 대체
+	 $(".category2").append("<option value='" + select_cateCode + "' selected='selected'>전체</option>");
+	}
+
+$("#cancle_Btn").click(function(){
+		location.href = "/admin/goods/view/?n= "+${goods.gdsNum};
+	});
+
+$("#update_Btn").click(function(){
+	$("#modify-form").submit();
 });
+
+
+	
+	
 
 
 //컨트롤러에서 데이터 받기
@@ -170,7 +184,7 @@ var cate1Select = $("select.category1")
 
 for(var i = 0; i < cate1Arr.length; i++) {
 cate1Select.append("<option value='" + cate1Arr[i].cateCode + "'>"
-   + cate1Arr[i].cateName + "</option>"); 
+ + cate1Arr[i].cateName + "</option>"); 
 }
 
 $(document).on("change", "select.category1", function(){
@@ -218,6 +232,15 @@ $(document).on("change", "select.category1", function(){
 	 
 	 
 	});
+
+
+
+});
+
+
+
+
+
 
 
 </script>

@@ -64,6 +64,7 @@
 	<context:component-scan base-package="com.company.dao"></context:component-scan>
 	<context:component-scan base-package="com.company.domain"></context:component-scan>
 	<context:component-scan base-package="com.company.persistence"></context:component-scan>
+	<context:component-scan base-package="com.company.util"></context:component-scan>
 	
 	<tx:annotation-driven/> 
 </beans>
